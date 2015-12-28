@@ -78,19 +78,13 @@ public class Field {
         return isPresent;
     }
     public boolean canSetShip( Ship ship ) {
-        // проверяем, что наш корабль попадает в поле
         if ( ship.positionX < 0 || ship.positionY < 0 || FIELDSIZE <= ship.positionX || FIELDSIZE <= ship.positionY ) return false;
         if ( ship.isVertical && FIELDSIZE <= ship.positionY + ship.size ) return false;
         if ( !ship.isVertical && FIELDSIZE <= ship.positionX + ship.size ) return false;
-
-        // проверяем, что в зоне вокруг корабля никого нет
-        // обрезаем зону
         int minX = Math.max( 0, ship.positionX - 1 );
         int minY = Math.max( 0, ship.positionY - 1 );
         int maxX = Math.min( FIELDSIZE - 1, ship.positionX + 1 + (ship.isVertical ? 0 : ship.size) );
         int maxY = Math.min( FIELDSIZE - 1, ship.positionY + 1 + (ship.isVertical ? ship.size : 0) );
-
-        // сама проверка
         for ( int x = minX; x <= maxX; x++ ) {
             for ( int y = minY; y <= maxY; y++ ) {
                 if ( isShipPresent( x, y ) ) return false;
