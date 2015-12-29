@@ -1,22 +1,25 @@
+import java.util.Random;
+
 /**
  * Created by YuGa on 12/23/15.
  */
+//TODO зробити позіцію зв'язану з сайз, яка буде від нього залежати і не вийде за границі поля
+//а кінцева позиція = початкова+розмір
 public class Field {
-    final int FIELDSIZE = 10;
-
-    char[][] cells = new char[FIELDSIZE][FIELDSIZE];
-    Ship ship;
+    static final int FIELD_SIZE = 10;
+    static char[][] cells = new char[FIELD_SIZE][FIELD_SIZE];
+    // Ship ship = new Ship();
 
     void init() {
-        for (int i = 0; i < FIELDSIZE; i++) {
-            for (int j = 0; j < FIELDSIZE; j++) {
+        for (int i = 0; i < FIELD_SIZE; i++) {
+            for (int j = 0; j < FIELD_SIZE; j++) {
                 cells[i][j] = '.';
             }
         }
     }
 
-    void setShip(Ship ship) {
-        this.ship = ship;
+    public static void setShip(Ship ship) {
+        //this.ship = ship;
         if (ship.isVertical) {
             for (int i = 0; i < ship.size; i++) {
                 cells[ship.positionX][ship.positionY + i] = 'X';
@@ -48,49 +51,70 @@ public class Field {
     }
 
     void show() {
-        for (int i = 0; i < FIELDSIZE; i++) {
+        for (int i = 0; i < FIELD_SIZE; i++) {
 
             if (i == 0) {
-                for (int k = 0; k < FIELDSIZE; k++) {
+                for (int k = 0; k < FIELD_SIZE; k++) {
                     System.out.print("\t" + k);
                 }
                 System.out.println();
             }
             System.out.print(i);
-            for (int j = 0; j < FIELDSIZE; j++) {
+            for (int j = 0; j < FIELD_SIZE; j++) {
                 System.out.print("\t" + cells[i][j]);
             }
             System.out.println();
         }
     }
 
-    boolean isShipPresent(int positionX, int positionY) {
+    static boolean isShipPresent(int positionX, int positionY) {
         return cells[positionX][positionY] == 'X';
     }
 
     boolean isNotGameOver() {
         boolean isPresent = false;
-        for (int i = 0; i < FIELDSIZE; i++) {
-            for (int j = 0; j < FIELDSIZE; j++) {
+        for (int i = 0; i < FIELD_SIZE; i++) {
+            for (int j = 0; j < FIELD_SIZE; j++) {
                 if (cells[i][j] == 'X') isPresent = true;
             }
         }
         return isPresent;
     }
-    public boolean canSetShip( Ship ship ) {
-        if ( ship.positionX < 0 || ship.positionY < 0 || FIELDSIZE <= ship.positionX || FIELDSIZE <= ship.positionY ) return false;
-        if ( ship.isVertical && FIELDSIZE <= ship.positionY + ship.size ) return false;
-        if ( !ship.isVertical && FIELDSIZE <= ship.positionX + ship.size ) return false;
+
+    public static boolean canSetShip(Ship ship) {
+        if (ship.positionX < 0 || ship.positionY < 0 || FIELD_SIZE <= ship.positionX || FIELD_SIZE <= ship.positionY)
+            return false;
+        if (ship.isVertical && FIELD_SIZE <= ship.positionY + ship.size) return false;
+        if (!ship.isVertical && FIELD_SIZE <= ship.positionX + ship.size) return false;
         int minX = Math.max( 0, ship.positionX - 1 );
         int minY = Math.max( 0, ship.positionY - 1 );
-        int maxX = Math.min( FIELDSIZE - 1, ship.positionX + 1 + (ship.isVertical ? 0 : ship.size) );
-        int maxY = Math.min( FIELDSIZE - 1, ship.positionY + 1 + (ship.isVertical ? ship.size : 0) );
+        int maxX = Math.min(FIELD_SIZE - 1, ship.positionX + 1 + (ship.isVertical ? 0 : ship.size));
+        int maxY = Math.min(FIELD_SIZE - 1, ship.positionY + 1 + (ship.isVertical ? ship.size : 0));
         for ( int x = minX; x <= maxX; x++ ) {
             for ( int y = minY; y <= maxY; y++ ) {
                 if ( isShipPresent( x, y ) ) return false;
             }
         }
         return true;
+    }
+
+    public static void generateShips() {
+        Random rand = new Random();
+        final int NUMBER_OF_SHIPS = 10;
+        Ship[] ships = new Ship[NUMBER_OF_SHIPS];
+        for (int i = 0; i < NUMBER_OF_SHIPS; i++) {
+            boolean isShipPlaced = false;
+            do {
+                if (i == 0) ships[i] = new Ship(rand.nextInt(10), rand.nextInt(10), 4, rand.nextBoolean());
+                if (i > 0 && i <= 2) ships[i] = new Ship(rand.nextInt(10), rand.nextInt(10), 3, rand.nextBoolean());
+                if (i > 2 && i <= 5) ships[i] = new Ship(rand.nextInt(10), rand.nextInt(10), 2, rand.nextBoolean());
+                if (i > 5) ships[i] = new Ship(rand.nextInt(10), rand.nextInt(10), 1, rand.nextBoolean());
+                if (canSetShip(ships[i])) {
+                    setShip(ships[i]);
+                    isShipPlaced = true;
+                }
+            } while (!isShipPlaced);
+        }
     }
 }
 

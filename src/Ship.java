@@ -13,6 +13,8 @@ public class Ship {
         this.size = size;
         this.isVertical = isVertical;
     }
+
+
 }
 
 
