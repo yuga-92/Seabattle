@@ -1,14 +1,13 @@
 import java.util.Random;
-
 /**
  * Created by YuGa on 12/23/15.
  */
-//TODO зробити позіцію зв'язану з сайз, яка буде від нього залежати і не вийде за границі поля
-//а кінцева позиція = початкова+розмір
+//TODO Зробити перевірку кількості життів корабля
 public class Field {
     static final int FIELD_SIZE = 10;
     static char[][] cells = new char[FIELD_SIZE][FIELD_SIZE];
-    // Ship ship = new Ship();
+    static final int NUMBER_OF_SHIPS = 10;
+    static Ship[] ships = new Ship[NUMBER_OF_SHIPS];
 
     void init() {
         for (int i = 0; i < FIELD_SIZE; i++) {
@@ -18,8 +17,7 @@ public class Field {
         }
     }
 
-    public static void setShip(Ship ship) {
-        //this.ship = ship;
+    public static void setShipOnField(Ship ship) {
         if (ship.isVertical) {
             for (int i = 0; i < ship.size; i++) {
                 cells[ship.positionX][ship.positionY + i] = 'X';
@@ -32,6 +30,7 @@ public class Field {
     }
 
     void doShoot(Shoot shoot) {
+        //перенести в клас Shoot
         switch (cells[shoot.xCoord][shoot.yCoord]) {
             case '.':
                 System.out.println("MISS");
@@ -99,9 +98,8 @@ public class Field {
     }
 
     public static void generateShips() {
+        //переписати щоб позиція корабля генерувалась в класі Ship
         Random rand = new Random();
-        final int NUMBER_OF_SHIPS = 10;
-        Ship[] ships = new Ship[NUMBER_OF_SHIPS];
         for (int i = 0; i < NUMBER_OF_SHIPS; i++) {
             boolean isShipPlaced = false;
             do {
@@ -110,7 +108,7 @@ public class Field {
                 if (i > 2 && i <= 5) ships[i] = new Ship(rand.nextInt(10), rand.nextInt(10), 2, rand.nextBoolean());
                 if (i > 5) ships[i] = new Ship(rand.nextInt(10), rand.nextInt(10), 1, rand.nextBoolean());
                 if (canSetShip(ships[i])) {
-                    setShip(ships[i]);
+                    setShipOnField(ships[i]);
                     isShipPlaced = true;
                 }
             } while (!isShipPlaced);
