@@ -2,7 +2,7 @@ import java.util.Random;
 /**
  * Created by YuGa on 12/23/15.
  */
-//TODO Зробити перевірку кількості життів корабля
+//TODO Зробити перевірку кількості життів корабля і поміняти  світч
 public class Field {
     static final int FIELD_SIZE = 10;
     static char[][] cells = new char[FIELD_SIZE][FIELD_SIZE];
